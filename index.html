@@ -18,6 +18,21 @@
         user-select: none;
         -webkit-user-select: none;
       }
+      .start-splash {
+        position: fixed;
+        inset: 0;
+        background: #000;
+        z-index: 200;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 18px;
+        letter-spacing: 0.5px;
+        transition:
+          opacity 0.5s ease,
+          visibility 0.5s ease;
+      }
       .boot-screen {
         position: absolute;
         top: 0;
@@ -35,8 +50,10 @@
       }
       .boot-gif {
         max-width: 100%;
-        width: 1280px;
+        max-height: 100%;
+        width: auto;
         height: auto;
+        object-fit: contain;
       }
       .win-container {
         position: relative;
@@ -45,7 +62,6 @@
         display: none;
         background: url("https://i.sstatic.net/lubGc.jpg") center/cover;
       }
-
       .blur-overlay {
         position: absolute;
         inset: 0;
@@ -122,7 +138,6 @@
         justify-content: center;
         align-items: center;
         transition: background-color 0.2s;
-        cursor: pointer;
       }
       .submit-arrow:hover {
         background-color: rgba(255, 255, 255, 0.2);
@@ -133,12 +148,10 @@
         color: rgba(255, 255, 255, 0.8);
         text-decoration: none;
         position: relative;
-        cursor: pointer;
       }
       .forgot-password-link:hover {
         color: white;
       }
-
       .forgot-password-link:hover::after {
         content: "Slide to unlock";
         position: absolute;
@@ -220,7 +233,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
       }
       .ethernet {
         height: 20px;
@@ -267,6 +279,7 @@
     </style>
   </head>
   <body>
+    <div class="start-splash" id="startSplash">Click anywhere to boot...</div>
     <div class="boot-screen" id="bootScreen">
       <img
         class="boot-gif"
@@ -323,6 +336,7 @@
       </div>
     </div>
     <script>
+      const startSplash = document.getElementById("startSplash");
       const bootScreen = document.getElementById("bootScreen");
       const winContainer = document.getElementById("winContainer");
       const lockScreen = document.getElementById("lockScreen");
@@ -338,21 +352,34 @@
       let currentY = 0;
       const unlockThreshold = 0.25;
       const CORRECT_PASSWORD = "asdfghjkl;'\\";
-      setTimeout(() => {
-        bootScreen.style.opacity = "0";
-      }, 10000);
-      setTimeout(() => {
-        bootScreen.style.display = "none";
-        winContainer.style.display = "block";
-        updateClock();
-      }, 13000);
+      function requestFullscreen() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        }
+      }
+      startSplash.addEventListener("click", () => {
+        requestFullscreen();
+        startSplash.style.opacity = "0";
+        setTimeout(() => {
+          startSplash.style.visibility = "hidden";
+        }, 500);
+        setTimeout(() => {
+          bootScreen.style.opacity = "0";
+        }, 10000);
+        setTimeout(() => {
+          bootScreen.style.display = "none";
+          winContainer.style.display = "block";
+          updateClock();
+        }, 13000);
+      });
       function updateClock() {
+        const timeEl = document.getElementById("timeDisplay");
+        const dateEl = document.getElementById("dateDisplay");
+        if (!timeEl || !dateEl) return;
         const now = new Date();
-        document.getElementById("timeDisplay").textContent =
-          `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+        timeEl.textContent = `${now.getHours()}:${now.getMinutes().toString().padStart(2, "0")}`;
         const options = { weekday: "long", month: "long", day: "numeric" };
-        document.getElementById("dateDisplay").textContent =
-          now.toLocaleDateString("en-US", options);
+        dateEl.textContent = now.toLocaleDateString("en-US", options);
       }
       setInterval(updateClock, 1000);
       function dragStart(e) {
