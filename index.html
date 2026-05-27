@@ -335,7 +335,7 @@
         </button>
       </div>
     </div>
-    <script>
+<script>
       const startSplash = document.getElementById("startSplash");
       const bootScreen = document.getElementById("bootScreen");
       const winContainer = document.getElementById("winContainer");
@@ -360,6 +360,7 @@
       function handleBoot(e) {
         if (e) e.preventDefault();
         requestFullscreen();
+        
         startSplash.style.opacity = "0";
         setTimeout(() => {
           startSplash.style.visibility = "hidden";
