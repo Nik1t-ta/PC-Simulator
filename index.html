@@ -357,7 +357,7 @@
           document.documentElement.requestFullscreen().catch(() => {});
         }
       }
-      startSplash.addEventListener("click", () => {
+      startSplash.addEventListener("pointerdown", () => {
         requestFullscreen();
         startSplash.style.opacity = "0";
         setTimeout(() => {
