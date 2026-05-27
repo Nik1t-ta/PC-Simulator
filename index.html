@@ -1,386 +1,443 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Windows 10</title>
     <style>
-        * {
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-        }
-        body {
-            height: 100vh;
-            overflow: hidden;
-            font-family: 'Segoe UI', sans-serif;
-            background: #000;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        .boot-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%; 
-            height: 100%;
-            background: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            cursor: none;
-            transition: opacity 0.8s ease;
-            padding: 20px;
-        }
-        .boot-gif { 
-            max-width: 100%;
-            width: 1280px; 
-            height: auto;
-        }
-        .win-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: none;
-            background: url('https://i.sstatic.net/lubGc.jpg') center/cover;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        height: 100vh;
+        overflow: hidden;
+        font-family: "Segoe UI", sans-serif;
+        background: #000;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      .boot-screen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+        cursor: none;
+        transition: opacity 0.8s ease;
+        padding: 20px;
+      }
+      .boot-gif {
+        max-width: 100%;
+        width: 1280px;
+        height: auto;
+      }
+      .win-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: none;
+        background: url("https://i.sstatic.net/lubGc.jpg") center/cover;
+      }
 
-        .blur-overlay {
-            position: absolute;
-            inset: 0;
-            backdrop-filter: blur(0px);
-            -webkit-backdrop-filter: blur(0px);
-            z-index: 2;
-            transition: backdrop-filter 0.6s ease, -webkit-backdrop-filter 0.6s ease;
-        }
-        .login-screen {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            z-index: 3;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.7s ease;
-            padding: 20px;
-        }
+      .blur-overlay {
+        position: absolute;
+        inset: 0;
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
+        z-index: 2;
+        transition:
+          backdrop-filter 0.6s ease,
+          -webkit-backdrop-filter 0.6s ease;
+      }
+      .login-screen {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        z-index: 3;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.7s ease;
+        padding: 10px;
+      }
+      .avatar {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: url("https://winaero.com/blog/wp-content/uploads/2018/08/Windows-10-user-icon-big.png")
+          center/cover;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+      }
+      .username {
+        font-size: 32px;
+        margin-bottom: 40px;
+        transition: all 0.3s ease;
+      }
+      .password-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        max-width: 280px;
+        height: 40px;
+        background-color: rgba(0, 0, 0, 0.6);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        position: relative;
+      }
+      .password-container:focus-within {
+        border-color: #0078d7;
+        background-color: black;
+      }
+      .password-input {
+        flex-grow: 1;
+        height: 100%;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: white;
+        padding-left: 12px;
+        font-size: 16px;
+      }
+      .password-input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .submit-arrow {
+        width: 40px;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: white;
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 0.2s;
+        cursor: pointer;
+      }
+      .submit-arrow:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      .forgot-password-link {
+        margin-top: 15px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        position: relative;
+        cursor: pointer;
+      }
+      .forgot-password-link:hover {
+        color: white;
+      }
+
+      .forgot-password-link:hover::after {
+        content: "Slide to unlock";
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #fff;
+        color: #000;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        white-space: nowrap;
+        margin-bottom: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+      .forgot-password-link:hover::before {
+        content: "";
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 5px;
+        border-style: solid;
+        border-color: #fff transparent transparent transparent;
+        margin-bottom: -5px;
+      }
+      .welcome-message {
+        display: none;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+        gap: 15px;
+      }
+      .spinner-gif {
+        height: 30px;
+        width: auto;
+      }
+      .lock-screen {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 40px;
+        color: white;
+        touch-action: none;
+      }
+      .lock-time-container {
+        position: absolute;
+        bottom: 100px;
+        left: 50px;
+      }
+      .lock-time {
+        font-size: clamp(60px, 15vw, 92px);
+        font-weight: 300;
+        line-height: 1;
+      }
+      .lock-date {
+        font-size: clamp(18px, 4vw, 24px);
+        opacity: 0.9;
+        margin-top: 5px;
+      }
+      .bottom-buttons {
+        position: fixed;
+        bottom: 35px;
+        right: 35px;
+        display: flex;
+        gap: 18px;
+        z-index: 20;
+      }
+      .lock-btn {
+        border: none;
+        width: 50px;
+        height: 50px;
+        background: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .ethernet {
+        height: 20px;
+        width: auto;
+      }
+      .power {
+        height: 25px;
+        width: auto;
+        filter: invert();
+      }
+      @media (max-height: 450px) {
         .avatar {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            background: url('https://winaero.com/blog/wp-content/uploads/2018/08/Windows-10-user-icon-big.png') center/cover;
-            margin-bottom: 20px;
+          width: 80px;
+          height: 80px;
+          margin-bottom: 10px;
         }
         .username {
-            font-size: 32px;
-            margin-bottom: 40px;
-        }
-        .password-container {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            max-width: 280px;
-            height: 40px;
-            background-color: rgba(0, 0, 0, 0.6);
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            position: relative;
-        }
-        .password-container:focus-within {
-            border-color: #0078D7;
-            background-color: black;
-        }
-        .password-input {
-            flex-grow: 1;
-            height: 100%;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: white;
-            padding-left: 12px;
-            font-size: 16px;
-        }
-        .password-input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        .submit-arrow {
-            width: 40px;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            font-size: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: background-color 0.2s;
-            cursor: pointer;
-        }
-        .submit-arrow:hover {
-            background-color: rgba(255, 255, 255, 0.2);
+          font-size: 24px;
+          margin-bottom: 15px;
         }
         .forgot-password-link {
-            margin-top: 15px;
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            position: relative;
-            cursor: pointer;
-        }
-        .forgot-password-link:hover {
-            color: white;
-        }
-        .forgot-password-link:hover::after {
-            content: "Slide to unlock";
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #fff;
-            color: #000;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            white-space: nowrap;
-            margin-bottom: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        .forgot-password-link:hover::before {
-            content: "";
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border-width: 5px;
-            border-style: solid;
-            border-color: #fff transparent transparent transparent;
-            margin-bottom: -5px;
-        }
-        .welcome-message {
-            display: none;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-            gap: 15px;
-        }
-        .spinner-gif {
-            height: 30px;
-            width: auto;
-        }
-        .lock-screen {
-            position: absolute;
-            inset: 0;
-            z-index: 5;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 40px;
-            color: white;
-            touch-action: none;
+          margin-top: 8px;
         }
         .lock-time-container {
-            position: absolute;
-            bottom: 100px;
-            left: 50px;
-        }
-        .lock-time { 
-            font-size: clamp(60px, 15vw, 92px);
-            font-weight: 300; 
-            line-height: 1;
-        }
-        .lock-date { 
-            font-size: clamp(18px, 4vw, 24px); 
-            opacity: 0.9; 
-            margin-top: 5px;
+          left: 20px;
+          bottom: 40px;
         }
         .bottom-buttons {
-            position: fixed;
-            bottom: 35px;
-            right: 35px;
-            display: flex;
-            gap: 18px;
-            z-index: 20;
+          bottom: 15px;
+          right: 15px;
         }
-        .lock-btn {
-            border: none;
-            width: 50px; 
-            height: 50px;
-            background: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
+      }
+      @media (max-width: 480px) and (min-height: 451px) {
+        .lock-time-container {
+          left: 25px;
+          bottom: 120px;
         }
-        .ethernet {
-            height: 20px;
-            width: auto;
+        .bottom-buttons {
+          bottom: 20px;
+          right: 20px;
+          gap: 10px;
         }
-        .power {
-            height: 25px;
-            width: auto;
-            filter: invert();
-        }
-        @media (max-width: 480px) {
-            .lock-time-container {
-                left: 25px;
-                bottom: 120px;
-            }
-            .bottom-buttons {
-                bottom: 20px;
-                right: 20px;
-                gap: 10px;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="boot-screen" id="bootScreen">
-        <img class="boot-gif" src="https://upload.wikimedia.org/wikipedia/commons/4/41/Bootanimation_von_Windows_10_%28beschnitten%29.gif" draggable="false">
+      <img
+        class="boot-gif"
+        src="https://upload.wikimedia.org/wikipedia/commons/4/41/Bootanimation_von_Windows_10_%28beschnitten%29.gif"
+        draggable="false"
+      />
     </div>
     <div class="win-container" id="winContainer">
-        <div class="blur-overlay" id="blurOverlay"></div>
-        <div class="login-screen" id="loginScreen">
-            <div class="avatar"></div>
-            <div class="username">Guest</div>
-            <div class="password-container" id="passwordContainer">
-                <input type="password" style="cursor: default;" class="password-input" placeholder="Password" id="passwordInput">
-                <button class="submit-arrow" id="submitArrow">&#10140;</button>
-            </div>
-            <a class="forgot-password-link" id="forgotPasswordLink">Forgot password?</a>
-            <div class="welcome-message" id="welcomeMessage">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/Windows-loading-cargando.gif" class="spinner-gif" alt="Loading">
-                <span>Welcome back!</span>
-            </div>
+      <div class="blur-overlay" id="blurOverlay"></div>
+      <div class="login-screen" id="loginScreen">
+        <div class="avatar"></div>
+        <div class="username">Guest</div>
+        <div class="password-container" id="passwordContainer">
+          <input
+            type="password"
+            style="cursor: default"
+            class="password-input"
+            placeholder="Password"
+            id="passwordInput"
+          />
+          <button class="submit-arrow" id="submitArrow">&#10140;</button>
         </div>
-        <div class="lock-screen" id="lockScreen">
-            <div class="lock-time-container">
-                <div class="lock-time" id="timeDisplay">..:..</div>
-                <div class="lock-date" id="dateDisplay">.....</div>
-            </div>
+        <a class="forgot-password-link" id="forgotPasswordLink"
+          >Forgot password?</a
+        >
+        <div class="welcome-message" id="welcomeMessage">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/3/3f/Windows-loading-cargando.gif"
+            class="spinner-gif"
+            alt="Loading"
+          />
+          <span>Welcome back!</span>
         </div>
-        <div class="bottom-buttons">
-            <button id="button" class="lock-btn">
-                <img class="ethernet" src="https://i.postimg.cc/MHpCKXHY/Snimok-ekrana-2026-05-27-113913.png"></button>
-            <button id="butto" class="lock-btn">
-                <img class="power" src="https://cdn-icons-png.flaticon.com/512/2938/2938605.png">
-            </button>
+      </div>
+      <div class="lock-screen" id="lockScreen">
+        <div class="lock-time-container">
+          <div class="lock-time" id="timeDisplay">..:..</div>
+          <div class="lock-date" id="dateDisplay">.....</div>
         </div>
+      </div>
+      <div class="bottom-buttons">
+        <button id="button" class="lock-btn">
+          <img
+            class="ethernet"
+            src="https://i.postimg.cc/MHpCKXHY/Snimok-ekrana-2026-05-27-113913.png"
+          />
+        </button>
+        <button id="butto" class="lock-btn">
+          <img
+            class="power"
+            src="https://cdn-icons-png.flaticon.com/512/2938/2938605.png"
+          />
+        </button>
+      </div>
     </div>
     <script>
-        const bootScreen = document.getElementById('bootScreen');
-        const winContainer = document.getElementById('winContainer');
-        const lockScreen = document.getElementById('lockScreen');
-        const loginScreen = document.getElementById('loginScreen');
-        const blurOverlay = document.getElementById('blurOverlay');
-        const passwordInput = document.getElementById('passwordInput');
-        const passwordContainer = document.getElementById('passwordContainer');
-        const submitArrow = document.getElementById('submitArrow');
-        const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-        const welcomeMessage = document.getElementById('welcomeMessage');  
-        let isDragging = false;
-        let startY = 0;
-        let currentY = 0;
-        const unlockThreshold = 0.25;
-        const CORRECT_PASSWORD = "asdfghjkl;'\\"; 
-        setTimeout(() => {
-            bootScreen.style.opacity = '0';
-        }, 10000);
-        setTimeout(() => {
-            bootScreen.style.display = 'none';
-            winContainer.style.display = 'block';
-            updateClock();
-        }, 13000);
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('timeDisplay').textContent = 
-                `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-            const options = { weekday: 'long', month: 'long', day: 'numeric' };
-            document.getElementById('dateDisplay').textContent = now.toLocaleDateString('en-US', options);
+      const bootScreen = document.getElementById("bootScreen");
+      const winContainer = document.getElementById("winContainer");
+      const lockScreen = document.getElementById("lockScreen");
+      const loginScreen = document.getElementById("loginScreen");
+      const blurOverlay = document.getElementById("blurOverlay");
+      const passwordInput = document.getElementById("passwordInput");
+      const passwordContainer = document.getElementById("passwordContainer");
+      const submitArrow = document.getElementById("submitArrow");
+      const forgotPasswordLink = document.getElementById("forgotPasswordLink");
+      const welcomeMessage = document.getElementById("welcomeMessage");
+      let isDragging = false;
+      let startY = 0;
+      let currentY = 0;
+      const unlockThreshold = 0.25;
+      const CORRECT_PASSWORD = "asdfghjkl;'\\";
+      setTimeout(() => {
+        bootScreen.style.opacity = "0";
+      }, 10000);
+      setTimeout(() => {
+        bootScreen.style.display = "none";
+        winContainer.style.display = "block";
+        updateClock();
+      }, 13000);
+      function updateClock() {
+        const now = new Date();
+        document.getElementById("timeDisplay").textContent =
+          `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+        const options = { weekday: "long", month: "long", day: "numeric" };
+        document.getElementById("dateDisplay").textContent =
+          now.toLocaleDateString("en-US", options);
+      }
+      setInterval(updateClock, 1000);
+      function dragStart(e) {
+        if (e.type === "mousedown" && e.button !== 0) return;
+        isDragging = true;
+        startY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY;
+        lockScreen.style.transition = "none";
+      }
+      function dragMove(e) {
+        if (!isDragging) return;
+        const clientY =
+          e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
+        currentY = Math.min(0, clientY - startY);
+        lockScreen.style.transform = `translateY(${currentY}px)`;
+      }
+      function dragEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        const progress = Math.abs(currentY) / window.innerHeight;
+        if (progress >= unlockThreshold) {
+          lockScreen.style.transition =
+            "transform 0.55s cubic-bezier(0.25, 0.1, 0.25, 1)";
+          lockScreen.style.transform = `translateY(-100%)`;
+          setTimeout(() => {
+            blurOverlay.style.backdropFilter = `blur(25px)`;
+            blurOverlay.style.webkitBackdropFilter = `blur(25px)`;
+            loginScreen.style.opacity = "1";
+            loginScreen.style.pointerEvents = "auto";
+            passwordInput.focus();
+          }, 200);
+        } else {
+          lockScreen.style.transition = "transform 0.4s ease";
+          lockScreen.style.transform = `translateY(0)`;
         }
-        setInterval(updateClock, 1000);
-        function dragStart(e) {
-            if (e.type === 'mousedown' && e.button !== 0) return;
-            isDragging = true;
-            startY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
-            lockScreen.style.transition = 'none';
+        currentY = 0;
+      }
+      lockScreen.addEventListener("mousedown", dragStart);
+      window.addEventListener("mousemove", dragMove);
+      window.addEventListener("mouseup", dragEnd);
+      lockScreen.addEventListener("touchstart", dragStart, { passive: true });
+      window.addEventListener("touchmove", dragMove, { passive: true });
+      window.addEventListener("touchend", dragEnd);
+      document.addEventListener("keydown", (e) => {
+        if (
+          (e.key === " " || e.key === "Enter") &&
+          loginScreen.style.opacity !== "1"
+        ) {
+          e.preventDefault();
+          lockScreen.style.transition =
+            "transform 0.55s cubic-bezier(0.25, 0.1, 0.25, 1)";
+          lockScreen.style.transform = `translateY(-100%)`;
+          setTimeout(() => {
+            blurOverlay.style.backdropFilter = `blur(25px)`;
+            blurOverlay.style.webkitBackdropFilter = `blur(25px)`;
+            loginScreen.style.opacity = "1";
+            loginScreen.style.pointerEvents = "auto";
+            passwordInput.focus();
+          }, 200);
         }
-        function dragMove(e) {
-            if (!isDragging) return;
-            const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
-            currentY = Math.min(0, clientY - startY);
-            lockScreen.style.transform = `translateY(${currentY}px)`;
+      });
+      function handleLogin() {
+        if (passwordInput.value === CORRECT_PASSWORD) {
+          const firstButton = document.getElementById("button");
+          const secondButton = document.getElementById("butto");
+          if (firstButton) firstButton.remove();
+          if (secondButton) secondButton.remove();
+          passwordContainer.remove();
+          forgotPasswordLink.remove();
+          welcomeMessage.style.display = "flex";
+          document.body.style.cursor = "none";
+        } else {
+          passwordInput.style.borderColor = "red";
+          setTimeout(() => {
+            passwordInput.style.borderColor = "";
+          }, 500);
+          passwordInput.value = "";
+          passwordInput.focus();
         }
-        function dragEnd() {
-            if (!isDragging) return;
-            isDragging = false;
-            const progress = Math.abs(currentY) / window.innerHeight;
-            if (progress >= unlockThreshold) {
-                lockScreen.style.transition = 'transform 0.55s cubic-bezier(0.25, 0.1, 0.25, 1)';
-                lockScreen.style.transform = `translateY(-100%)`;
-                setTimeout(() => {
-                    blurOverlay.style.backdropFilter = `blur(25px)`;
-                    blurOverlay.style.webkitBackdropFilter = `blur(25px)`;
-                    loginScreen.style.opacity = '1';
-                    loginScreen.style.pointerEvents = 'auto';
-                    passwordInput.focus();
-                }, 200);
-            } else {
-                lockScreen.style.transition = 'transform 0.4s ease';
-                lockScreen.style.transform = `translateY(0)`;
-            }
-            currentY = 0;
+      }
+      submitArrow.addEventListener("click", handleLogin);
+      passwordInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          handleLogin();
         }
-        lockScreen.addEventListener('mousedown', dragStart);
-        window.addEventListener('mousemove', dragMove);
-        window.addEventListener('mouseup', dragEnd);
-        lockScreen.addEventListener('touchstart', dragStart, {passive: true});
-        window.addEventListener('touchmove', dragMove, {passive: true});
-        window.addEventListener('touchend', dragEnd);
-        document.addEventListener('keydown', (e) => {
-            if ((e.key === ' ' || e.key === 'Enter') && loginScreen.style.opacity !== '1') {
-                e.preventDefault();
-                lockScreen.style.transition = 'transform 0.55s cubic-bezier(0.25, 0.1, 0.25, 1)';
-                lockScreen.style.transform = `translateY(-100%)`;
-                setTimeout(() => {
-                    blurOverlay.style.backdropFilter = `blur(25px)`;
-                    blurOverlay.style.webkitBackdropFilter = `blur(25px)`;
-                    loginScreen.style.opacity = '1';
-                    loginScreen.style.pointerEvents = 'auto';
-                    passwordInput.focus();
-                }, 200);
-            }
-        });
-        function handleLogin() {
-            if (passwordInput.value === CORRECT_PASSWORD) {
-                const firstButton = document.getElementById('button');
-                const secondButton = document.getElementById('butto');
-                if (firstButton) firstButton.remove();
-                if (secondButton) secondButton.remove();
-                passwordContainer.remove();
-                forgotPasswordLink.remove();
-                welcomeMessage.style.display = 'flex';
-                document.body.style.cursor = 'none';
-            } 
-            else {
-                passwordInput.style.borderColor = 'red';
-                setTimeout(() => {
-                    passwordInput.style.borderColor = '';
-                }, 500);
-                passwordInput.value = '';
-                passwordInput.focus();
-            }
-        }
-        submitArrow.addEventListener('click', handleLogin);
-        passwordInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                handleLogin();
-            }
-        });
+      });
     </script>
-</body>
+  </body>
 </html>
