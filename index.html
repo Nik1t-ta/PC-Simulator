@@ -16,6 +16,9 @@
             font-family: 'Segoe UI', sans-serif;
             background: #000;
             user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
         .boot-screen {
             position: absolute;
@@ -32,7 +35,10 @@
             transition: opacity 0.8s ease;
         }
         .boot-gif { 
-            max-width: 1280px; 
+            max-width: 90vw;
+            max-height: 90vh;
+            width: auto;
+            height: auto;
         }
         .win-container {
             position: relative;
@@ -172,6 +178,7 @@
             justify-content: flex-end;
             padding: 40px;
             color: white;
+            touch-action: none;
         }
         .lock-time-container {
             position: absolute;
@@ -179,12 +186,12 @@
             left: 50px;
         }
         .lock-time { 
-            font-size: 92px; 
+            font-size: clamp(48px, 12vw, 92px); 
             font-weight: 300; 
             line-height: 1;
         }
         .lock-date { 
-            font-size: 24px; 
+            font-size: clamp(14px, 4vw, 24px); 
             opacity: 0.9; 
             margin-top: 5px;
         }
@@ -198,30 +205,144 @@
         }
         .lock-btn {
             border: none;
-            width: 50px; 
-            height: 50px;
+            width: clamp(40px, 8vw, 50px); 
+            height: clamp(40px, 8vw, 50px);
             background: none;
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
         .ethernet {
-            height: 20px;
+            height: clamp(16px, 4vw, 20px);
             width: auto;
         }
         .power {
-            height: 25px;
+            height: clamp(20px, 5vw, 25px);
             width: auto;
             filter: invert();
+        }
+        
+        /* Desktop Styles */
+        .desktop {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            display: none;
+            background: url('https://i.sstatic.net/lubGc.jpg') center/cover;
+        }
+        .desktop-icons {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-wrap: wrap;
+            max-height: calc(100vh - 50px);
+            align-content: flex-start;
+        }
+        .desktop-icon {
+            width: 74px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            transition: background-color 0.2s;
+        }
+        .desktop-icon:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .desktop-icon:active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .desktop-icon-img {
+            width: 42px;
+            height: 42px;
+            margin-bottom: 5px;
+        }
+        .desktop-icon-label {
+            color: white;
+            font-size: 12px;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            word-wrap: break-word;
+            max-width: 65px;
+            line-height: 1.2;
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .lock-time-container {
+                left: 50%;
+                transform: translateX(-50%);
+                bottom: 80px;
+                text-align: center;
+            }
+            .login-screen {
+                padding: 20px;
+            }
+            .avatar {
+                width: 100px;
+                height: 100px;
+            }
+            .username {
+                font-size: clamp(20px, 5vw, 32px);
+            }
+            .password-container {
+                width: clamp(240px, 80vw, 280px);
+            }
+            .bottom-buttons {
+                bottom: 20px;
+                right: 20px;
+                gap: 12px;
+            }
+            .desktop-icon {
+                width: 60px;
+            }
+            .desktop-icon-img {
+                width: 36px;
+                height: 36px;
+            }
+            .desktop-icon-label {
+                font-size: 10px;
+                max-width: 55px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="boot-screen" id="bootScreen">
-        <img class="boot-gif" src="https://upload.wikimedia.org/wikipedia/commons/4/41/Bootanimation_von_Windows_10_%28beschnitten%29.gif" draggable="false">
+        <img class="boot-gif" src="https://upload.wikimedia.org/wikipedia/commons/4/41/Bootanimation_von_Windows_10_%28beschnitten%29.gif" draggable="false" alt="Windows Boot Animation">
     </div>
     <div class="win-container" id="winContainer">
         <div class="blur-overlay" id="blurOverlay"></div>
+        
+        <!-- Desktop -->
+        <div class="desktop" id="desktop">
+            <div class="desktop-icons">
+                <div class="desktop-icon" onclick="alert('Recycle Bin opened!')">
+                    <img class="desktop-icon-img" src="https://icons.iconarchive.com/icons/dakirby309/simply-styled/256/Recycle-Bin-Full-icon.png" alt="Recycle Bin">
+                    <span class="desktop-icon-label">Recycle Bin</span>
+                </div>
+                <div class="desktop-icon" onclick="alert('This PC opened!')">
+                    <img class="desktop-icon-img" src="https://icons.iconarchive.com/icons/dakirby309/simply-styled/256/Computer-icon.png" alt="This PC">
+                    <span class="desktop-icon-label">This PC</span>
+                </div>
+                <div class="desktop-icon" onclick="alert('Control Panel opened!')">
+                    <img class="desktop-icon-img" src="https://icons.iconarchive.com/icons/dakirby309/simply-styled/256/Settings-icon.png" alt="Control Panel">
+                    <span class="desktop-icon-label">Control Panel</span>
+                </div>
+                <div class="desktop-icon" onclick="alert('Microsoft Edge opened!')">
+                    <img class="desktop-icon-img" src="https://icons.iconarchive.com/icons/dakirby309/simply-styled/256/Browser-icon.png" alt="Microsoft Edge">
+                    <span class="desktop-icon-label">Microsoft Edge</span>
+                </div>
+            </div>
+        </div>
+        
         <div class="login-screen" id="loginScreen">
             <div class="avatar"></div>
             <div class="username">Guest</div>
@@ -242,10 +363,10 @@
             </div>
         </div>
         <div class="bottom-buttons">
-            <button id="button" class="lock-btn">
-                <img class="ethernet" src="https://i.postimg.cc/MHpCKXHY/Snimok-ekrana-2026-05-27-113913.png"></button>
-            <button id="butto" class="lock-btn">
-                <img class="power" src="https://cdn-icons-png.flaticon.com/512/2938/2938605.png">
+            <button id="button" class="lock-btn" aria-label="Network">
+                <img class="ethernet" src="https://i.postimg.cc/MHpCKXHY/Snimok-ekrana-2026-05-27-113913.png" alt="Network"></button>
+            <button id="butto" class="lock-btn" aria-label="Power">
+                <img class="power" src="https://cdn-icons-png.flaticon.com/512/2938/2938605.png" alt="Power">
             </button>
         </div>
     </div>
@@ -259,12 +380,18 @@
         const passwordContainer = document.getElementById('passwordContainer');
         const submitArrow = document.getElementById('submitArrow');
         const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-        const welcomeMessage = document.getElementById('welcomeMessage');  
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const desktop = document.getElementById('desktop');  
         let isDragging = false;
         let startY = 0;
         let currentY = 0;
         const unlockThreshold = 0.65;
         const CORRECT_PASSWORD = "asdfghjkl;'\\"; 
+        
+        // Touch support variables
+        let touchStartY = 0;
+        let touchCurrentY = 0;
+        
         setTimeout(() => {
             bootScreen.style.opacity = '0';
         }, 10000);
@@ -311,9 +438,47 @@
                 lockScreen.style.transform = `translateY(0)`;
             }
         }
+        // Mouse events for desktop
         lockScreen.addEventListener('mousedown', dragStart);
         window.addEventListener('mousemove', dragMove);
         window.addEventListener('mouseup', dragEnd);
+        
+        // Touch events for mobile
+        lockScreen.addEventListener('touchstart', (e) => {
+            if (e.touches.length !== 1) return;
+            isDragging = true;
+            touchStartY = e.touches[0].clientY;
+            lockScreen.style.transition = 'none';
+            e.preventDefault();
+        }, { passive: false });
+        
+        lockScreen.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            touchCurrentY = Math.min(0, e.touches[0].clientY - touchStartY);
+            lockScreen.style.transform = `translateY(${touchCurrentY}px)`;
+            e.preventDefault();
+        }, { passive: false });
+        
+        lockScreen.addEventListener('touchend', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            const progress = Math.abs(touchCurrentY) / window.innerHeight;
+            if (progress >= unlockThreshold) {
+                lockScreen.style.transition = 'transform 0.55s cubic-bezier(0.25, 0.1, 0.25, 1)';
+                lockScreen.style.transform = `translateY(-100%)`;
+                setTimeout(() => {
+                    blurOverlay.style.backdropFilter = `blur(25px)`;
+                    loginScreen.style.opacity = '1';
+                    loginScreen.style.pointerEvents = 'auto';
+                    passwordInput.focus();
+                }, 200);
+            } else {
+                lockScreen.style.transition = 'transform 0.4s ease';
+                lockScreen.style.transform = `translateY(0)`;
+            }
+            touchCurrentY = 0;
+        });
+        
         document.addEventListener('keydown', (e) => {
             if ((e.key === ' ' || e.key === 'Enter') && loginScreen.style.opacity !== '1') {
                 e.preventDefault();
@@ -337,6 +502,15 @@
                 forgotPasswordLink.remove();
                 welcomeMessage.style.display = 'flex';
                 document.body.style.cursor = 'none';
+                
+                // Show desktop after welcome message
+                setTimeout(() => {
+                    loginScreen.style.opacity = '0';
+                    loginScreen.style.pointerEvents = 'none';
+                    blurOverlay.style.backdropFilter = 'blur(0px)';
+                    desktop.style.display = 'block';
+                    document.body.style.cursor = 'default';
+                }, 3000);
             } 
             else {
                 passwordInput.style.borderColor = 'red';
