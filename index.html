@@ -335,7 +335,7 @@
         </button>
       </div>
     </div>
-<script>
+    <script>
       const startSplash = document.getElementById("startSplash");
       const bootScreen = document.getElementById("bootScreen");
       const winContainer = document.getElementById("winContainer");
@@ -360,7 +360,6 @@
       function handleBoot(e) {
         if (e) e.preventDefault();
         requestFullscreen();
-        
         startSplash.style.opacity = "0";
         setTimeout(() => {
           startSplash.style.visibility = "hidden";
@@ -376,20 +375,6 @@
       }
       startSplash.addEventListener("click", handleBoot);
       startSplash.addEventListener("touchend", handleBoot, { passive: false });
-        requestFullscreen();
-        startSplash.style.opacity = "0";
-        setTimeout(() => {
-          startSplash.style.visibility = "hidden";
-        }, 500);
-        setTimeout(() => {
-          bootScreen.style.opacity = "0";
-        }, 10000);
-        setTimeout(() => {
-          bootScreen.style.display = "none";
-          winContainer.style.display = "block";
-          updateClock();
-        }, 13000);
-      });
       function updateClock() {
         const timeEl = document.getElementById("timeDisplay");
         const dateEl = document.getElementById("dateDisplay");
@@ -400,6 +385,7 @@
         dateEl.textContent = now.toLocaleDateString("en-US", options);
       }
       setInterval(updateClock, 1000);
+
       function dragStart(e) {
         if (e.type === "mousedown" && e.button !== 0) return;
         isDragging = true;
