@@ -357,8 +357,24 @@
           document.documentElement.requestFullscreen().catch(() => {});
         }
       }
-      ["click", "touchend"].forEach(eventType => {
-        startSplash.addEventListener(eventType, (e) => {
+      function handleBoot(e) {
+        if (e) e.preventDefault();
+        requestFullscreen();
+        startSplash.style.opacity = "0";
+        setTimeout(() => {
+          startSplash.style.visibility = "hidden";
+        }, 500);
+        setTimeout(() => {
+          bootScreen.style.opacity = "0";
+        }, 10000);
+        setTimeout(() => {
+          bootScreen.style.display = "none";
+          winContainer.style.display = "block";
+          updateClock();
+        }, 13000);
+      }
+      startSplash.addEventListener("click", handleBoot);
+      startSplash.addEventListener("touchend", handleBoot, { passive: false });
         requestFullscreen();
         startSplash.style.opacity = "0";
         setTimeout(() => {
