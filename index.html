@@ -16,6 +16,7 @@
             font-family: 'Segoe UI', sans-serif;
             background: #000;
             user-select: none;
+            -webkit-user-select: none;
         }
         .boot-screen {
             position: absolute;
@@ -30,9 +31,12 @@
             z-index: 100;
             cursor: none;
             transition: opacity 0.8s ease;
+            padding: 20px;
         }
         .boot-gif { 
-            max-width: 1280px; 
+            max-width: 100%;
+            width: 1280px; 
+            height: auto;
         }
         .win-container {
             position: relative;
@@ -46,8 +50,9 @@
             position: absolute;
             inset: 0;
             backdrop-filter: blur(0px);
+            -webkit-backdrop-filter: blur(0px);
             z-index: 2;
-            transition: backdrop-filter 0.6s ease;
+            transition: backdrop-filter 0.6s ease, -webkit-backdrop-filter 0.6s ease;
         }
         .login-screen {
             position: absolute;
@@ -61,6 +66,7 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.7s ease;
+            padding: 20px;
         }
         .avatar {
             width: 140px;
@@ -76,7 +82,8 @@
         .password-container {
             display: flex;
             align-items: center;
-            width: 280px;
+            width: 100%;
+            max-width: 280px;
             height: 40px;
             background-color: rgba(0, 0, 0, 0.6);
             border: 2px solid rgba(255, 255, 255, 0.4);
@@ -110,6 +117,7 @@
             justify-content: center;
             align-items: center;
             transition: background-color 0.2s;
+            cursor: pointer;
         }
         .submit-arrow:hover {
             background-color: rgba(255, 255, 255, 0.2);
@@ -120,6 +128,7 @@
             color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
             position: relative;
+            cursor: pointer;
         }
         .forgot-password-link:hover {
             color: white;
@@ -172,6 +181,7 @@
             justify-content: flex-end;
             padding: 40px;
             color: white;
+            touch-action: none;
         }
         .lock-time-container {
             position: absolute;
@@ -179,12 +189,12 @@
             left: 50px;
         }
         .lock-time { 
-            font-size: 92px; 
+            font-size: clamp(60px, 15vw, 92px);
             font-weight: 300; 
             line-height: 1;
         }
         .lock-date { 
-            font-size: 24px; 
+            font-size: clamp(18px, 4vw, 24px); 
             opacity: 0.9; 
             margin-top: 5px;
         }
@@ -204,6 +214,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
         }
         .ethernet {
             height: 20px;
@@ -213,6 +224,17 @@
             height: 25px;
             width: auto;
             filter: invert();
+        }
+        @media (max-width: 480px) {
+            .lock-time-container {
+                left: 25px;
+                bottom: 120px;
+            }
+            .bottom-buttons {
+                bottom: 20px;
+                right: 20px;
+                gap: 10px;
+            }
         }
     </style>
 </head>
@@ -263,7 +285,7 @@
         let isDragging = false;
         let startY = 0;
         let currentY = 0;
-        const unlockThreshold = 0.65;
+        const unlockThreshold = 0.25;
         const CORRECT_PASSWORD = "asdfghjkl;'\\"; 
         setTimeout(() => {
             bootScreen.style.opacity = '0';
@@ -281,16 +303,16 @@
             document.getElementById('dateDisplay').textContent = now.toLocaleDateString('en-US', options);
         }
         setInterval(updateClock, 1000);
-
         function dragStart(e) {
-            if (e.button !== 0) return;
+            if (e.type === 'mousedown' && e.button !== 0) return;
             isDragging = true;
-            startY = e.clientY;
+            startY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
             lockScreen.style.transition = 'none';
         }
         function dragMove(e) {
             if (!isDragging) return;
-            currentY = Math.min(0, e.clientY - startY);
+            const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+            currentY = Math.min(0, clientY - startY);
             lockScreen.style.transform = `translateY(${currentY}px)`;
         }
         function dragEnd() {
@@ -302,6 +324,7 @@
                 lockScreen.style.transform = `translateY(-100%)`;
                 setTimeout(() => {
                     blurOverlay.style.backdropFilter = `blur(25px)`;
+                    blurOverlay.style.webkitBackdropFilter = `blur(25px)`;
                     loginScreen.style.opacity = '1';
                     loginScreen.style.pointerEvents = 'auto';
                     passwordInput.focus();
@@ -310,10 +333,14 @@
                 lockScreen.style.transition = 'transform 0.4s ease';
                 lockScreen.style.transform = `translateY(0)`;
             }
+            currentY = 0;
         }
         lockScreen.addEventListener('mousedown', dragStart);
         window.addEventListener('mousemove', dragMove);
         window.addEventListener('mouseup', dragEnd);
+        lockScreen.addEventListener('touchstart', dragStart, {passive: true});
+        window.addEventListener('touchmove', dragMove, {passive: true});
+        window.addEventListener('touchend', dragEnd);
         document.addEventListener('keydown', (e) => {
             if ((e.key === ' ' || e.key === 'Enter') && loginScreen.style.opacity !== '1') {
                 e.preventDefault();
@@ -321,6 +348,7 @@
                 lockScreen.style.transform = `translateY(-100%)`;
                 setTimeout(() => {
                     blurOverlay.style.backdropFilter = `blur(25px)`;
+                    blurOverlay.style.webkitBackdropFilter = `blur(25px)`;
                     loginScreen.style.opacity = '1';
                     loginScreen.style.pointerEvents = 'auto';
                     passwordInput.focus();
