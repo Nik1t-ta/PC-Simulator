@@ -357,7 +357,8 @@
           document.documentElement.requestFullscreen().catch(() => {});
         }
       }
-      startSplash.addEventListener("pointerdown", () => {
+      ["click", "touchend"].forEach(eventType => {
+        startSplash.addEventListener(eventType, (e) => {
         requestFullscreen();
         startSplash.style.opacity = "0";
         setTimeout(() => {
